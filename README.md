@@ -7,6 +7,8 @@ varnish-cache (2 реплики)
 ↓
 nginx-ssl (4 реплики + SSL)
 
+Архитектура (https://i.imgur.com/example.png
+
 | Файл | Описание |
 |------|----------|
 | `dictionary-deploy.yaml` | Deployment 3 реплик dictionary-server |
