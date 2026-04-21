@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+ kind: Deployment
+ metadata:
+  name: varnish-cache
+ spec:
+  selector:
+    matchLabels:
+      app: varnish-cache
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: varnish-cache
+    spec:
+      containers:
+      - name: cache
+        resources:
+          requests:
+            # Зарезервируем 2 Гбайт памяти
+            # для каждого экземпляра Varnish-кэша
+            memory: 2Gi
+          image: brendanburns/varnish
+          command:
+          - varnishd
+          - -F
+          - -f
+          - /etc/varnish-config/default.vcl
+          - -a
+          - 0.0.0.0:8080
+          - -s
+          # Объем выделяемой здесь памяти должен соответствовать
+          # объему зарезервированной памяти, указанному ранее
+          - malloc,2G
+          ports:
+          - containerPort: 8080
+          volumeMounts:
+          - name: varnish
+           mountPath: /etc/varnish-config
+        volumes:
+        - name: varnish
+          configMap:
+            name: varnish-config
